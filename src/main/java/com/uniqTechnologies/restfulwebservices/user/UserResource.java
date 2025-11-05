@@ -1,26 +1,23 @@
 package com.uniqTechnologies.restfulwebservices.user;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -30,15 +27,12 @@ public class UserResource {
 	@Autowired
 	private UserDaoService service;
 
-	// GET /users
-	// retrieveAllUsers
-	// http://localhost:8080/users/
 	@GetMapping("/users")
 	public List<User> retrieveAllUsers() {
 		return service.findAll();
 	}
 
-	// GET /users/{id}
+	//http:localhost:8080/users/3
 	@GetMapping("/users/{id}")
 	public User retrieveUser(@PathVariable int id) {
 
@@ -49,8 +43,6 @@ public class UserResource {
 
 		return user;
 	}
-	
-	//http://localhost:8080/userResource/users/hateoas/7
 
 	@GetMapping("/users/hateoas/{id}")
 	public EntityModel<User> retrieveUser_hateoas(@PathVariable int id) {
@@ -70,21 +62,15 @@ public class UserResource {
 		return resource;
 	}
 
-	// input - details of user
-	// output - Created & Return the Created URI
-
+	
+	
 	@PostMapping("/users")
 	public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
 
 		User saveduser = service.save(user);
 
-		// CREATED
-		// /user/{id} savedUser.getId()
-
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(saveduser.getId())
 				.toUri();
-		
-		
 
 		return ResponseEntity.created(location).build();
 
@@ -98,6 +84,4 @@ public class UserResource {
 			throw new UserNotFoundException("id-" + id);
 	}
 
-	
-	
 }

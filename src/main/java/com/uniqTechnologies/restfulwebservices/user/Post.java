@@ -1,7 +1,5 @@
 package com.uniqTechnologies.restfulwebservices.user;
 
-
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,17 +10,24 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Post {
-	
+
 	@Id
 	@GeneratedValue
 	private Integer id;
-	
+
 	private String description;
-	
-	@ManyToOne(fetch=FetchType.LAZY)
+
+	// This means that when the entity is loaded, the related entity is not loaded
+	// immediately but only when it is accessed.
+	// typically when using libraries like Jackson to convert Java objects to JSON
+	// and vice versa.
+	//Even though @JoinColumn is not explicitly defined, 
+	//JPA will still create a foreign key column in the Post table
+	//pointing to the User table (usually named user_id by default).
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonIgnore
 	private User user;
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -40,6 +45,7 @@ public class Post {
 	}
 
 	public User getUser() {
+
 		return user;
 	}
 
@@ -51,5 +57,5 @@ public class Post {
 	public String toString() {
 		return String.format("Post [id=%s, description=%s]", id, description);
 	}
-	
+
 }
